@@ -5,7 +5,7 @@ import id.ac.ui.cs.advprog.eshop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation .*;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,8 +13,6 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
-
-    private static final String REDIRECT_PRODUCT_LIST = "redirect:/product/list";
 
     @Autowired
     private ProductService service;
@@ -27,11 +25,10 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public String createProductPost(@ModelAttribute Product product ) {
+    public String createProductPost(@ModelAttribute Product product, Model model) {
         product.setProductId(UUID.randomUUID().toString());
         service.create(product);
-        // You may want to update this to use the constant if the redirection path is consistent.
-        return REDIRECT_PRODUCT_LIST;
+        return "redirect:list";
     }
 
     @GetMapping("/list")
@@ -39,6 +36,7 @@ public class ProductController {
         List<Product> allProducts = service.findAll();
         model.addAttribute("products", allProducts);
         return "ProductList";
+
     }
 
     @GetMapping("/edit/{id}")
@@ -50,18 +48,18 @@ public class ProductController {
                 return "EditProduct";
             }
         }
-        return REDIRECT_PRODUCT_LIST;
+        return "redirect:/product/list";
     }
 
     @PostMapping("/edit")
     public String editProductPost(@ModelAttribute Product product) {
         service.update(product);
-        return REDIRECT_PRODUCT_LIST;
+        return "redirect:/product/list";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") String id) {
         service.delete(id);
-        return REDIRECT_PRODUCT_LIST;
+        return "redirect:/product/list";
     }
 }
