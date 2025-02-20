@@ -116,6 +116,68 @@ class ProductRepositoryTest {
         assertNull(result);
     }
 
+    /**
+     * NEW TEST:
+     * Ensures the loop in update() must skip the first product
+     * before finding a match on the second product.
+     */
+    @Test
+    void testUpdateExistingProductSecondInList() {
+        // Create a "dummy" product that won't be updated
+        Product firstProduct = new Product();
+        firstProduct.setProductId("11111");
+        firstProduct.setProductName("First Product");
+        firstProduct.setProductQuantity(10);
+        productRepository.create(firstProduct);
+
+        // Create the actual product we plan to update
+        Product secondProduct = new Product();
+        secondProduct.setProductId("22222");
+        secondProduct.setProductName("Old Name");
+        secondProduct.setProductQuantity(5);
+        productRepository.create(secondProduct);
+
+        // Now create an updated product with the same ID as the second
+        Product updatedSecond = new Product();
+        updatedSecond.setProductId("22222");
+        updatedSecond.setProductName("New Name");
+        updatedSecond.setProductQuantity(99);
+
+        // Perform the update
+        Product result = productRepository.update(updatedSecond);
+
+        // Verify it updated the second product correctly
+        assertNotNull(result);
+        assertEquals("22222", result.getProductId());
+        assertEquals("New Name", result.getProductName());
+        assertEquals(99, result.getProductQuantity());
+
+        // Also verify the first product is unchanged
+        Iterator<Product> iterator = productRepository.findAll();
+        Product p1 = iterator.next();
+        Product p2 = iterator.next();
+
+        // We don't know order in the list for sure, but we can check by ID
+        if (p1.getProductId().equals("11111")) {
+            assertEquals("First Product", p1.getProductName());
+            assertEquals(10, p1.getProductQuantity());
+
+            assertEquals("22222", p2.getProductId());
+            assertEquals("New Name", p2.getProductName());
+            assertEquals(99, p2.getProductQuantity());
+        } else {
+            // If p1 is the second product
+            assertEquals("22222", p1.getProductId());
+            assertEquals("New Name", p1.getProductName());
+            assertEquals(99, p1.getProductQuantity());
+
+            assertEquals("11111", p2.getProductId());
+            assertEquals("First Product", p2.getProductName());
+            assertEquals(10, p2.getProductQuantity());
+        }
+        assertFalse(iterator.hasNext());
+    }
+
     // ------------------ Tests for 'delete' ------------------
 
     @Test
@@ -154,5 +216,43 @@ class ProductRepositoryTest {
         assertTrue(productIterator.hasNext());
         Product stillPresent = productIterator.next();
         assertEquals("11111", stillPresent.getProductId());
+    }
+
+    /**
+     * NEW TEST:
+     * Ensures the loop in delete() must skip the first product
+     * before finding the matching second product to delete.
+     */
+    @Test
+    void testDeleteExistingProductSecondInList() {
+        // Create a product that won't be deleted
+        Product firstProduct = new Product();
+        firstProduct.setProductId("abc");
+        firstProduct.setProductName("First Product");
+        firstProduct.setProductQuantity(10);
+        productRepository.create(firstProduct);
+
+        // Create the product that will be deleted
+        Product secondProduct = new Product();
+        secondProduct.setProductId("99999");
+        secondProduct.setProductName("Second Product");
+        secondProduct.setProductQuantity(5);
+        productRepository.create(secondProduct);
+
+        // Delete the second product
+        boolean deleted = productRepository.delete("99999");
+        assertTrue(deleted);
+
+        // Verify the second product was removed, the first remains
+        Iterator<Product> productIterator = productRepository.findAll();
+        assertTrue(productIterator.hasNext());
+
+        Product remaining = productIterator.next();
+        assertEquals("abc", remaining.getProductId());
+        assertEquals("First Product", remaining.getProductName());
+        assertEquals(10, remaining.getProductQuantity());
+
+        // No more products
+        assertFalse(productIterator.hasNext());
     }
 }
