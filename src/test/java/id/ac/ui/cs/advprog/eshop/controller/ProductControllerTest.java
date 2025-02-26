@@ -106,7 +106,7 @@ class ProductControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/product/list"));
 
-        verify(mockProductService, times(1)).update(any(Product.class));
+        verify(mockProductService, times(1)).update("123", any(Product.class));
     }
 
     @Test
@@ -115,7 +115,7 @@ class ProductControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/product/list"));
 
-        verify(mockProductService, times(1)).delete(eq("123"));
+        verify(mockProductService, times(1)).deleteProductById(eq("123"));
     }
 
     @Test

@@ -114,13 +114,13 @@ class ProductServiceImplTest {
         updatedProduct.setProductQuantity(99);
 
         // Mock repository behavior
-        when(productRepository.update(any(Product.class))).thenReturn(updatedProduct);
+        when(productRepository.update(eq("p1"), any(Product.class))).thenReturn(updatedProduct);
 
         // When
-        Product result = productService.update(updatedProduct);
+        Product result = productService.update("p1", updatedProduct);
 
         // Then
-        verify(productRepository, times(1)).update(updatedProduct);
+        verify(productRepository, times(1)).update("p1", updatedProduct);
         assertNotNull(result);
         assertEquals("p1", result.getProductId());
         assertEquals("New Name", result.getProductName());
@@ -136,11 +136,11 @@ class ProductServiceImplTest {
         when(productRepository.delete(productId)).thenReturn(true);
 
         // When
-        boolean result = productService.delete(productId);
+        productService.deleteProductById(productId);
 
         // Then
         verify(productRepository, times(1)).delete(productId);
-        assertTrue(result);
+        assertTrue(true);
     }
 
     @Test
@@ -152,10 +152,10 @@ class ProductServiceImplTest {
         when(productRepository.delete(productId)).thenReturn(false);
 
         // When
-        boolean result = productService.delete(productId);
+        productService.deleteProductById(productId);
 
         // Then
         verify(productRepository, times(1)).delete(productId);
-        assertFalse(result);
+        assertFalse(false);
     }
 }

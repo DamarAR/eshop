@@ -87,7 +87,7 @@ class ProductRepositoryTest {
         updatedProduct.setProductQuantity(20);
 
         // Perform the update
-        Product result = productRepository.update(updatedProduct);
+        Product result = productRepository.update("12345",updatedProduct);
 
         // Verify that the update returned the product and changed the fields
         assertNotNull(result);
@@ -112,7 +112,7 @@ class ProductRepositoryTest {
         updatedProduct.setProductQuantity(20);
 
         // Should return null since the product doesn't exist
-        Product result = productRepository.update(updatedProduct);
+        Product result = productRepository.update("67890",updatedProduct);
         assertNull(result);
     }
 
