@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductRepositoryTest {
 
     @InjectMocks
-    ProductRepository productRepository;
+    ProductRepositoryImpl productRepository;
 
     @BeforeEach
     void setUp() {
         // Re-initialize the repository before each test
         // so each test starts with a fresh "database"
-        productRepository = new ProductRepository();
+        productRepository = new ProductRepositoryImpl();
     }
 
     @Test
