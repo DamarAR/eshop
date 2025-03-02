@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 class ProductServiceImplTest {
 
     @Mock
-    private ProductRepositoryImpl productRepository;
+    private ProductRepositoryImpl<Product> productRepository;
 
     @InjectMocks
     private ProductServiceImpl productService;  // This is the class we want to test
@@ -36,9 +36,9 @@ class ProductServiceImplTest {
     void testCreate() {
         // Given
         Product product = new Product();
-        product.setProductId("p1");
-        product.setProductName("Test Product");
-        product.setProductQuantity(10);
+        product.setId("p1");
+        product.setName("Test Product");
+        product.setQuantity(10);
 
         // Mock repository behavior
         when(productRepository.create(any(Product.class))).thenReturn(product);
@@ -51,23 +51,23 @@ class ProductServiceImplTest {
         verify(productRepository, times(1)).create(any(Product.class));
         // Verify the result
         assertNotNull(created);
-        assertEquals("p1", created.getProductId());
-        assertEquals("Test Product", created.getProductName());
-        assertEquals(10, created.getProductQuantity());
+        assertEquals("p1", created.getId());
+        assertEquals("Test Product", created.getName());
+        assertEquals(10, created.getQuantity());
     }
 
     @Test
     void testFindAll() {
         // Given
         Product product1 = new Product();
-        product1.setProductId("p1");
-        product1.setProductName("Test Product 1");
-        product1.setProductQuantity(10);
+        product1.setId("p1");
+        product1.setName("Test Product 1");
+        product1.setQuantity(10);
 
         Product product2 = new Product();
-        product2.setProductId("p2");
-        product2.setProductName("Test Product 2");
-        product2.setProductQuantity(20);
+        product2.setId("p2");
+        product2.setName("Test Product 2");
+        product2.setQuantity(20);
 
         List<Product> productList = Arrays.asList(product1, product2);
         // Convert List to an Iterator
@@ -82,8 +82,8 @@ class ProductServiceImplTest {
         // Then
         verify(productRepository, times(1)).findAll();
         assertEquals(2, result.size());
-        assertEquals("p1", result.get(0).getProductId());
-        assertEquals("p2", result.get(1).getProductId());
+        assertEquals("p1", result.get(0).getId());
+        assertEquals("p2", result.get(1).getId());
     }
 
     @Test
@@ -104,14 +104,14 @@ class ProductServiceImplTest {
     void testUpdate() {
         // Given
         Product product = new Product();
-        product.setProductId("p1");
-        product.setProductName("Old Name");
-        product.setProductQuantity(10);
+        product.setId("p1");
+        product.setName("Old Name");
+        product.setQuantity(10);
 
         Product updatedProduct = new Product();
-        updatedProduct.setProductId("p1");
-        updatedProduct.setProductName("New Name");
-        updatedProduct.setProductQuantity(99);
+        updatedProduct.setId("p1");
+        updatedProduct.setName("New Name");
+        updatedProduct.setQuantity(99);
 
         // Mock repository behavior
         when(productRepository.update(eq("p1"), any(Product.class))).thenReturn(updatedProduct);
@@ -122,9 +122,9 @@ class ProductServiceImplTest {
         // Then
         verify(productRepository, times(1)).update("p1", updatedProduct);
         assertNotNull(result);
-        assertEquals("p1", result.getProductId());
-        assertEquals("New Name", result.getProductName());
-        assertEquals(99, result.getProductQuantity());
+        assertEquals("p1", result.getId());
+        assertEquals("New Name", result.getName());
+        assertEquals(99, result.getQuantity());
     }
 
     @Test
@@ -133,10 +133,10 @@ class ProductServiceImplTest {
         String productId = "p1";
 
         // Mock repository behavior
-        when(productRepository.delete(productId)).thenReturn(true);
+//        when(productRepository.delete(productId)).thenReturn(true);
 
         // When
-        productService.deleteProductById(productId);
+        productService.deleteById(productId);
 
         // Then
         verify(productRepository, times(1)).delete(productId);
@@ -149,10 +149,10 @@ class ProductServiceImplTest {
         String productId = "notFound";
 
         // Mock repository behavior
-        when(productRepository.delete(productId)).thenReturn(false);
+//        when(productRepository.delete(productId)).thenReturn(false);
 
         // When
-        productService.deleteProductById(productId);
+        productService.deleteById(productId);
 
         // Then
         verify(productRepository, times(1)).delete(productId);

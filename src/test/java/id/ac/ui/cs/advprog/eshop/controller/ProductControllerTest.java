@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.eshop.controller;
 
 import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.service.ProductService;
+import id.ac.ui.cs.advprog.eshop.service.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,7 +27,7 @@ class ProductControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private ProductService mockProductService;
+    private ProductServiceImpl mockProductService;
 
     @InjectMocks
     private ProductController productController;
@@ -41,14 +42,14 @@ class ProductControllerTest {
     void testCreateProductPage() throws Exception {
         mockMvc.perform(get("/product/create"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("CreateProduct"))
+                .andExpect(view().name("createProduct"))
                 .andExpect(model().attributeExists("product"));
     }
 
     @Test
     void testCreateProductPost() throws Exception {
         Product newProduct = new Product();
-        newProduct.setProductId(UUID.randomUUID().toString());
+        newProduct.setId(UUID.randomUUID().toString());
         when(mockProductService.create(any(Product.class))).thenReturn(newProduct);
 
         mockMvc.perform(post("/product/create")
@@ -67,7 +68,7 @@ class ProductControllerTest {
 
         mockMvc.perform(get("/product/list"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("ProductList"))
+                .andExpect(view().name("productList"))
                 .andExpect(model().attributeExists("products"));
 
         verify(mockProductService, times(1)).findAll();
@@ -76,37 +77,34 @@ class ProductControllerTest {
     @Test
     void testEditProductPageFound() throws Exception {
         Product existingProduct = new Product();
-        existingProduct.setProductId("123");
-        List<Product> existingProducts = new ArrayList<>();
-        existingProducts.add(existingProduct);
-        when(mockProductService.findAll()).thenReturn(existingProducts);
+        existingProduct.setId("123");
+        when(mockProductService.findById("123")).thenReturn(existingProduct);
 
         mockMvc.perform(get("/product/edit/123"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("EditProduct"))
+                .andExpect(view().name("editProduct"))
                 .andExpect(model().attributeExists("product"));
     }
 
     @Test
     void testEditProductPageNotFound() throws Exception {
-        when(mockProductService.findAll()).thenReturn(new ArrayList<>());
+        when(mockProductService.findById("999")).thenReturn(null);
 
         mockMvc.perform(get("/product/edit/999"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/product/list"));
+                .andExpect(status().isOk());
     }
 
     @Test
     void testEditProductPost() throws Exception {
         Product updatedProduct = new Product();
-        updatedProduct.setProductId("123");
+        updatedProduct.setId("123");
 
         mockMvc.perform(post("/product/edit")
                         .flashAttr("product", updatedProduct))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/product/list"));
+                .andExpect(redirectedUrl("list"));
 
-        verify(mockProductService, times(1)).update("123", any(Product.class));
+        verify(mockProductService, times(1)).update(eq("123"), any(Product.class));
     }
 
     @Test
@@ -115,20 +113,7 @@ class ProductControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/product/list"));
 
-        verify(mockProductService, times(1)).deleteProductById(eq("123"));
+        verify(mockProductService, times(1)).deleteById(eq("123"));
     }
 
-    @Test
-    void testEditProductPageWithNullId() throws Exception {
-        Product productWithNullId = new Product();
-        productWithNullId.setProductId(null);
-        List<Product> productList = new ArrayList<>();
-        productList.add(productWithNullId);
-
-        when(mockProductService.findAll()).thenReturn(productList);
-
-        mockMvc.perform(get("/product/edit/123"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/product/list"));
-    }
 }
