@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 @Builder
 @Getter
+//refactor the status check in the constructor and setStatus method to use OrderStatus.contains().
 public class Order {
     String id;
     List<Product> products;
