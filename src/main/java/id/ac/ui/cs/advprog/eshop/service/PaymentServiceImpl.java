@@ -19,7 +19,7 @@ public class PaymentServiceImpl implements PaymentService {
     private OrderRepository orderRepository;
 
     @Override
-    public Payment addPayment(Order order, String method, HashMap<String, String> paymentData) {
+    public Payment addPayment(Order order, String method, HashMap <String, String> paymentData) {
         Payment payment = new Payment(order.getId(), method, paymentData);
         paymentRepository.add(payment);
         return payment;
