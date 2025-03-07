@@ -99,10 +99,4 @@ Without LSP, subclasses might not behave correctly when used in place of their b
 - If `Car` did not correctly extend `Product`, it could cause runtime errors when used as a `Product`.
 
 
-## Week 4
-### Reflection
-Code Quality Improvements
-- I made a minor enhancement to the contextLoads test in the application by adding descriptive comments. This update clarifies that the test's purpose is to verify the successful loading of the Spring Boot application context, even though no additional logic was required. While a small change, it improves code readability and ensures that future developers can easily understand the test’s intent.
 
-CI/CD Workflow Reflection
-- The current CI/CD implementation adheres to the fundamental principles of Continuous Integration and Continuous Deployment. The workflows automatically execute test suites and conduct code quality analysis on every commit, providing immediate feedback and ensuring seamless integration of new changes without compromising system stability. Additionally, automated deployment to a PaaS ensures that validated changes are swiftly and reliably released to production. This setup effectively reduces the risk of defects and aligns well with modern agile methodologies, promoting fast and dependable software delivery.
