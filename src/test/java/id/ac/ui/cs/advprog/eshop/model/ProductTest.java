@@ -30,4 +30,9 @@ class ProductTest {
         assertEquals(100, this.product.getQuantity());
     }
 
+    @Test
+    void testSetProductQuantity() {
+        product.setQuantity(200);
+        assertEquals(200, product.getQuantity());
+    }
 }
