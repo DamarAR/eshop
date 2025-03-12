@@ -5,7 +5,7 @@ import enums.PaymentStatus;
 import lombok.Getter;
 
 import java.util.HashMap;
-// Adding Payment Model
+
 @Getter
 public class Payment {
     String id;
